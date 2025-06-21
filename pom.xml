@@ -86,6 +86,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+<!--	Since using Spring Boot 3.5.0, it automatically includes Jakarta Servlet API 5.0+-->
 
 	<build>
 		<plugins>
