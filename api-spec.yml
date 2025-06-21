@@ -1,0 +1,57 @@
+
+---
+
+## 📜 `api-spec.yml` (v1)
+
+---
+openapi: 3.0.0
+info:
+  title: API Rate Limiting Gateway
+  version: 1.0.0
+  description: Admin and system APIs for rate limiting
+
+servers:
+  - url: http://localhost:8081
+
+paths:
+  /admin/user-plan:
+    post:
+      summary: Create or update a user's plan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPlan'
+      responses:
+        '200':
+          description: Plan saved
+    get:
+      summary: Get all user plans
+      responses:
+        '200':
+          description: List of plans
+
+  /admin/usage:
+    get:
+      summary: Get current usage per user
+      responses:
+        '200':
+          description: Usage stats
+
+components:
+  schemas:
+    UserPlan:
+      type: object
+      properties:
+        userId:
+          type: string
+        planName:
+          type: string
+        limit:
+          type: integer
+        windowInSeconds:
+          type: integer
+        strategy:
+          type: string
+          enum: [FIXED_WINDOW, SLIDING_WINDOW, TOKEN_BUCKET, LEAKY_BUCKET]
