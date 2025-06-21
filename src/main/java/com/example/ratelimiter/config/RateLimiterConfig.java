@@ -11,6 +11,6 @@ public class RateLimiterConfig {
     @Bean
     public RateLimitingStrategy rateLimitingStrategy() {
         // Example: Allow 5 requests per 10 seconds
-        return new FixedWindowStrategy(5, 30);
+        return new FixedWindowStrategy(5, 10);
     }
 }
