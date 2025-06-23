@@ -1,9 +1,13 @@
 package com.example.ratelimiter.middleware;
 
+import com.example.ratelimiter.model.UserPlan;
+import com.example.ratelimiter.service.UserPlanService;
 import com.example.ratelimiter.strategy.RateLimitingStrategy;
+import com.example.ratelimiter.strategy.StrategyFactory;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.http.HttpStatus;
 
@@ -12,11 +16,10 @@ import java.io.IOException;
 @Component
 public class RateLimiterMiddleware implements Filter {
 
-    private final RateLimitingStrategy strategy;
-
-    public RateLimiterMiddleware(RateLimitingStrategy strategy) {
-        this.strategy = strategy;
-    }
+    @Autowired
+    private UserPlanService userPlanService;
+    @Autowired
+    private StrategyFactory strategyFactory;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -25,14 +28,17 @@ public class RateLimiterMiddleware implements Filter {
         HttpServletResponse httpRes = (HttpServletResponse) response;
 
         String userId = httpReq.getHeader("X-User-Id");
+        UserPlan plan = userPlanService.getPlanForUser(userId);
+        RateLimitingStrategy strategy = strategyFactory.getStrategy(plan.getStrategy());
+
         if (userId == null || userId.isEmpty()) {
             httpRes.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             httpRes.getWriter().write("Missing X-User-Id header");
             return;
         }
 
-        boolean allowed = strategy.allowRequest(userId);
-        System.out.println("User: " + userId + " -> Allowed: " + allowed);
+        boolean allowed = strategy.allowRequest(userId, plan);
+        System.out.println("User: " + userId + " | Plan: " + plan.getPlanName() + " | Allowed: " + allowed);
         if (!allowed) {
             //  httpRes.setStatus(HttpServletResponse.SC_TOO_MANY_REQUESTS); -- this is not working, servlet omits this status
             httpRes.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
