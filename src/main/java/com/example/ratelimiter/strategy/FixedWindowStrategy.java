@@ -1,23 +1,19 @@
 package com.example.ratelimiter.strategy;
 
+import com.example.ratelimiter.model.UserPlan;
+
 import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class FixedWindowStrategy implements RateLimitingStrategy {
 
-    private final int maxRequests;
-    private final long windowInSeconds;
-
     private final Map<String, UserRequestData> userRequestMap = new ConcurrentHashMap<>();
 
-    public FixedWindowStrategy(int maxRequests, long windowInSeconds) {
-        this.maxRequests = maxRequests;
-        this.windowInSeconds = windowInSeconds;
-    }
-
     @Override
-    public boolean allowRequest(String userId) {
+    public boolean allowRequest(String userId, UserPlan plan) {
+        int maxRequests = plan.getLimit();
+        long windowInSeconds = plan.getWindowInSeconds();
         long currentWindow = Instant.now().getEpochSecond() / windowInSeconds;
 
         userRequestMap.putIfAbsent(userId, new UserRequestData(currentWindow, 0));
