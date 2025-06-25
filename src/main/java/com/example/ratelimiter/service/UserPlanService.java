@@ -4,7 +4,9 @@ import com.example.ratelimiter.model.PlanType;
 import com.example.ratelimiter.model.UserPlan;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -18,12 +20,24 @@ public class UserPlanService {
         userPlanMap.put("user999", new UserPlan("user999", PlanType.PRO));
     }
 
+//    public UserPlan getPlanForUser(String userId) {
+//        UserPlan plan = userPlanMap.get(userId);
+//        if (plan == null) {
+//            System.out.println("User " + userId + " not found. Using Default FREE plan.");
+//            return new UserPlan(userId, PlanType.FREE);
+//        }
+//        return plan;
+//    }
+
     public UserPlan getPlanForUser(String userId) {
-        UserPlan plan = userPlanMap.get(userId);
-        if (plan == null) {
-            System.out.println("User " + userId + " not found. Using Default FREE plan.");
-            return new UserPlan(userId, PlanType.FREE);
-        }
-        return plan;
+        return userPlanMap.getOrDefault(userId, new UserPlan(userId, PlanType.FREE));
+    }
+
+    public List<UserPlan> getAllPlans() {
+        return new ArrayList<>(userPlanMap.values());
+    }
+
+    public void updateUserPlan(String userId, PlanType plan) {
+        userPlanMap.put(userId, new UserPlan(userId, plan));
     }
 }

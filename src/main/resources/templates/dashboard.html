@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Dashboard</title>
+    <style>
+        table { border-collapse: collapse; width: 60%; margin: 20px auto; }
+        th, td { border: 1px solid #aaa; padding: 8px; text-align: center; }
+        th { background-color: #f0f0f0; }
+        form { margin-top: 20px; text-align: center; }
+    </style>
+</head>
+<body>
+<h2 style="text-align:center;">User Plan Dashboard</h2>
+<table>
+    <thead>
+    <tr>
+        <th>User ID</th>
+        <th>Plan</th>
+        <th>Limit</th>
+        <th>Window (sec)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${users}">
+        <td th:text="${user.userId}"></td>
+        <td th:text="${user.planName}"></td>
+        <td th:text="${user.limit}"></td>
+        <td th:text="${user.windowInSeconds}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<form method="post" action="/dashboard/update">
+    <label>User ID: <input type="text" name="userId" required/></label>
+    <label>Plan:
+        <select name="plan">
+            <option th:each="p : ${plans}" th:value="${p}" th:text="${p}"></option>
+        </select>
+    </label>
+    <button type="submit">Update Plan</button>
+</form>
+</body>
+</html>
