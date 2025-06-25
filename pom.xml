@@ -30,6 +30,7 @@
 		<java.version>23</java.version>
 	</properties>
 	<dependencies>
+		<!-- Actuator for health/metrics -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
@@ -65,6 +66,7 @@
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
+		<!-- Micrometer Prometheus registry -->
 		<dependency>
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-registry-prometheus</artifactId>

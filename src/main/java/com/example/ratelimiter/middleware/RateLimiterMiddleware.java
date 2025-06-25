@@ -1,6 +1,8 @@
 package com.example.ratelimiter.middleware;
 
 import com.example.ratelimiter.model.UserPlan;
+import com.example.ratelimiter.service.RequestLogService;
+import com.example.ratelimiter.service.RequestMetricsService;
 import com.example.ratelimiter.service.UserPlanService;
 import com.example.ratelimiter.strategy.RateLimitingStrategy;
 import com.example.ratelimiter.strategy.StrategyFactory;
@@ -19,11 +21,17 @@ public class RateLimiterMiddleware implements Filter {
 
     private final UserPlanService userPlanService;
     private final StrategyFactory strategyFactory;
+    private final RequestLogService requestLogService;
+    private final RequestMetricsService requestMetricsService;
 
     public RateLimiterMiddleware(UserPlanService userPlanService,
-                                 StrategyFactory strategyFactory) {
+                                 StrategyFactory strategyFactory,
+                                 RequestLogService requestLogService,
+                                 RequestMetricsService requestMetricsService) {
         this.userPlanService = userPlanService;
         this.strategyFactory = strategyFactory;
+        this.requestLogService = requestLogService;
+        this.requestMetricsService = requestMetricsService;
     }
 
     @Override
@@ -43,6 +51,8 @@ public class RateLimiterMiddleware implements Filter {
         }
 
         boolean allowed = strategy.allowRequest(userId, plan);
+        requestLogService.logRequest(userId, allowed);
+        requestMetricsService.logRequest(userId, allowed);
         System.out.println("User: " + userId + " | Plan: " + plan.getPlanName() + " | Allowed: " + allowed);
         if (!allowed) {
             //  httpRes.setStatus(HttpServletResponse.SC_TOO_MANY_REQUESTS); -- this is not working, servlet omits this status
