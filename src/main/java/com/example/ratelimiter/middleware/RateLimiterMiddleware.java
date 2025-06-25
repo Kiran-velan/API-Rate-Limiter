@@ -13,13 +13,18 @@ import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 
-@Component
+//  removed @Component annotation Since we're now registering the filter manually in Configuration
+//@Component
 public class RateLimiterMiddleware implements Filter {
 
-    @Autowired
-    private UserPlanService userPlanService;
-    @Autowired
-    private StrategyFactory strategyFactory;
+    private final UserPlanService userPlanService;
+    private final StrategyFactory strategyFactory;
+
+    public RateLimiterMiddleware(UserPlanService userPlanService,
+                                 StrategyFactory strategyFactory) {
+        this.userPlanService = userPlanService;
+        this.strategyFactory = strategyFactory;
+    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
