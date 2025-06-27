@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Request Logs</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 2rem;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #2c3e50;
+        }
+
+        select {
+            display: block;
+            margin: 0 auto 2rem auto;
+            padding: 0.5rem;
+            font-size: 1rem;
+        }
+
+        h2 {
+            margin-top: 2rem;
+            color: #34495e;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 4px;
+        }
+
+        .log-table-container {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 2rem;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            background-color: #fff;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 0.6rem;
+            text-align: center;
+        }
+
+        th {
+            background-color: #ecf0f1;
+        }
+
+        .blocked {
+            color: #c0392b;
+            font-weight: bold;
+        }
+
+        .allowed {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .user-section {
+            margin-bottom: 4rem;
+        }
+    </style>
+</head>
+<body>
+<h1>User Request Logs</h1>
+
+<!-- Filter Dropdown -->
+<select id="userFilter" onchange="filterLogs()">
+    <option value="all">Show All Users</option>
+    <option th:each="userId : ${userIds}"
+            th:value="${userId}"
+            th:text="${userId}">
+    </option>
+</select>
+
+<!-- Logs Table Sections -->
+<div th:each="entry : ${logs}" th:attr="id=${'section-' + entry.key}" class="user-section">
+    <h2 th:text="'User: ' + ${entry.key}">User ID</h2>
+    <div class="log-table-container">
+        <table>
+            <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="log : ${entry.value}">
+                <td th:text="${log.timestamp}"></td>
+                <td th:text="${log.allowed ? 'Allowed' : 'Blocked'}"
+                    th:class="${log.allowed ? 'allowed' : 'blocked'}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function filterLogs() {
+        const selectedUser = document.getElementById("userFilter").value;
+        const allSections = document.querySelectorAll(".user-section");
+
+        allSections.forEach(section => {
+            if (selectedUser === "all") {
+                section.style.display = "block";
+            } else {
+                section.style.display = section.id === `section-${selectedUser}` ? "block" : "none";
+            }
+        });
+
+        if (selectedUser !== "all") {
+            document.getElementById(`section-${selectedUser}`).scrollIntoView({ behavior: 'smooth' });
+        } else {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+</script>
+
+</body>
+</html>
