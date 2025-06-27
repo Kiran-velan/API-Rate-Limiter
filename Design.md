@@ -54,11 +54,11 @@ This document describes the architectural design, key components, file responsib
 
 ## 3. Supported Rate Limiting Strategies
 - Configure the rates in PlanType enum
-- If needed to add new algorithms:
+### To add new algorithms:
   - Create a new file in strategy/
   - Implement(In-memory/Redis backed) algorithm into the file
-  - Add a Key:value map in StrategyFactory
-  - Create a new PlanType and map the algorithm and its limits 
+  - Add a Key:value map in strategy/StrategyFactory.java
+  - Create a new model/PlanType.java and map the algorithm and its limits 
 
 1. **Token Bucket**
    - Configurable token refill rate
