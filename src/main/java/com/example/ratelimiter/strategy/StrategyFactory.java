@@ -23,7 +23,7 @@ public class StrategyFactory {
     public StrategyFactory(StringRedisTemplate redisTemplate) {
         this.strategies = Map.of(
                 "FIXED_WINDOW", new RedisFixedWindowStrategy(redisTemplate),
-                "TOKEN_BUCKET", new TokenBucketStrategy() // not implemented yet
+                "TOKEN_BUCKET", new RedisTokenBucketStrategy(redisTemplate) // not implemented yet
         );
     }
 

@@ -41,23 +41,30 @@ public class RateLimiterMiddleware implements Filter {
         HttpServletResponse httpRes = (HttpServletResponse) response;
 
         String userId = httpReq.getHeader("X-User-Id");
-        UserPlan plan = userPlanService.getPlanForUser(userId);
-        RateLimitingStrategy strategy = strategyFactory.getStrategy(plan.getStrategy());
 
         if (userId == null || userId.isEmpty()) {
             httpRes.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             httpRes.getWriter().write("Missing X-User-Id header");
+            httpRes.getWriter().flush();
             return;
         }
 
+        // Ensure new user gets stored in Redis with default FREE plan
+        userPlanService.ensureUserHasPlan(userId);
+        UserPlan plan = userPlanService.getPlanForUser(userId);
+        RateLimitingStrategy strategy = strategyFactory.getStrategy(plan.getStrategy());
+
         boolean allowed = strategy.allowRequest(userId, plan);
+
         requestLogService.logRequest(userId, allowed);
         requestMetricsService.logRequest(userId, allowed);
-        System.out.println("User: " + userId + " | Plan: " + plan.getPlanName() + " | Allowed: " + allowed);
+
+        System.out.printf("✅ [%s] Plan=%s | Allowed=%s%n", userId, plan.getPlanName(), allowed);
+
         if (!allowed) {
-            //  httpRes.setStatus(HttpServletResponse.SC_TOO_MANY_REQUESTS); -- this is not working, servlet omits this status
             httpRes.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
             httpRes.getWriter().write("Rate limit exceeded");
+            httpRes.getWriter().flush();
             return;
         }
 

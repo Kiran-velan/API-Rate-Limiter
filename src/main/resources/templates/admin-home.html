@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Admin Home</title>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding: 50px;
+    }
+    h1 {
+        margin-bottom: 30px;
+    }
+    .btn {
+        display: inline-block;
+        margin: 10px;
+        padding: 15px 30px;
+        background-color: #4CAF50;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+    }
+    .btn:hover {
+        background-color: #45a049;
+    }
+    .logout {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: red;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Welcome, Admin</h1>
+
+<a href="/dashboard" class="btn">Manage User Plans</a>
+<a href="/admin/chart" class="btn">View Analytics</a>
+<a href="/admin/logs" class="btn">View Request Logs</a>
+<a href="/logout" class="btn logout">Logout</a>
+
+</body>
+</html>

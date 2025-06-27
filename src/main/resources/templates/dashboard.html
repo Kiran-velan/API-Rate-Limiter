@@ -3,14 +3,71 @@
 <head>
     <title>Admin Dashboard</title>
     <style>
-        table { border-collapse: collapse; width: 60%; margin: 20px auto; }
-        th, td { border: 1px solid #aaa; padding: 8px; text-align: center; }
-        th { background-color: #f0f0f0; }
-        form { margin-top: 20px; text-align: center; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f9fc;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: 20px auto;
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #e0e0e0;
+        }
+
+        form {
+            margin: 30px auto;
+            width: fit-content;
+            background: #fff;
+            padding: 15px 30px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        label {
+            margin: 0 10px;
+        }
+
+        input[type="text"], select {
+            padding: 5px 8px;
+            margin-left: 5px;
+        }
+
+        button {
+            margin-left: 10px;
+            padding: 6px 12px;
+            background-color: #2e8b57;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #246b45;
+        }
     </style>
 </head>
 <body>
-<h2 style="text-align:center;">User Plan Dashboard</h2>
+<h2>User Plan Dashboard</h2>
+
 <table>
     <thead>
     <tr>
@@ -31,9 +88,12 @@
 </table>
 
 <form method="post" action="/dashboard/update">
-    <label>User ID: <input type="text" name="userId" required/></label>
+    <label>User ID:
+        <input type="text" name="userId" placeholder="e.g. user123" required/>
+    </label>
     <label>Plan:
-        <select name="plan">
+        <select name="plan" required>
+            <option disabled selected>Select Plan</option>
             <option th:each="p : ${plans}" th:value="${p}" th:text="${p}"></option>
         </select>
     </label>
