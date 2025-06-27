@@ -19,7 +19,7 @@ public class RateLimiterConfig {
                                                                            RequestMetricsService requestMetricsService) {
         FilterRegistrationBean<RateLimiterMiddleware> registration = new FilterRegistrationBean<>();
         registration.setFilter(new RateLimiterMiddleware(userPlanService, strategyFactory, requestLogService, requestMetricsService));
-        registration.addUrlPatterns("/hello", "/api/*"); // Rate limiter applies to these endpoints
+        registration.addUrlPatterns("/hello"); // Rate limiter applies to these endpoints
         registration.setName("RateLimiterMiddleware");
         registration.setOrder(1); // Ensure it's one of the earliest filters
         return registration;
